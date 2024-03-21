@@ -25,7 +25,7 @@ const ListeBoutons = document.getElementById("liste-de-boutons");
 // On crée la balise input qui sont les boutons de la liste-de-boutons
 
 const boutonElement = document.createElement("input");
-//On rajoute les attributs id, value, type ***
+//On rajoute les attributs id, value, type 
 boutonElement.id = "Tous";
 boutonElement.value = "Tous";
 boutonElement.type = "button";
@@ -105,12 +105,3 @@ function funcFiltrer(categorie) {
     Afficher_Liste(works_filtres)
 }
 
-// Je me connecte au serveur 
-
-let reponse_login = await fetch("http://localhost:5678/api/users/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-  body: '{"email": "sophie.bluel@test.tld", "password": "S0phie"}'
-});
-
-console.log(reponse_login)
