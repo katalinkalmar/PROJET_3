@@ -1,6 +1,4 @@
-
 // Je récupère les paramètres
-
 
 const form = document.querySelector('form');
 
@@ -30,7 +28,7 @@ form.addEventListener("submit", async function (event) {
 
     // Je me connecte au serveur 
 
-    // body: ce que j'envoie au serveur, chareUtile est une variable, la version sstring de login_info
+    // body: ce que j'envoie au serveur, chargeUtile est une variable, la version string de login_info
 
     let reponse_login = await fetch("http://localhost:5678/api/users/login", {
         method: "POST",
@@ -39,6 +37,10 @@ form.addEventListener("submit", async function (event) {
     });
 
     let login_token = await reponse_login.json();
-    console.log(login_token)
+    console.log(login_token);
+let token = login_token.token;
+window.localStorage.setItem("token", token);
 
 });
+
+    

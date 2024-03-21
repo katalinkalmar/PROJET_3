@@ -10,13 +10,13 @@ const gallery = document.querySelector(".gallery");
 
 //J'enregistre la réponse du serveur lorsque je lui demande les catégories
 const reponse_categorie = await fetch("http://localhost:5678/api/categories")
+
 // Je stocke dans une constante la liste des catégories des works
 const categories = await reponse_categorie.json()
 console.log(categories)
 
 // On récupère l'emplacement des boutons
 const ListeBoutons = document.getElementById("liste-de-boutons");
-
 
 
 
@@ -30,13 +30,13 @@ boutonElement.id = "Tous";
 boutonElement.value = "Tous";
 boutonElement.type = "button";
 
-boutonElement.addEventListener("click", function () { 
+boutonElement.addEventListener("click", function () {
     console.log("Tous")
-  
+
     // - On vide la gallery avec InnerHTML (voir cours Mettre à jour l'affichage de la page web OC)
     gallery.innerHTML = "";
-   
-        //- On affiche, la liste complète
+
+    //- On affiche, la liste complète
     Afficher_Liste(works)
 });
 
@@ -53,7 +53,7 @@ for (let i = 0; i < categories.length; i++) {
     boutonElement.value = categorieActuelle.name;
     boutonElement.type = "button";
 
-    boutonElement.addEventListener("click", function () { funcFiltrer(categorieActuelle.id )});
+    boutonElement.addEventListener("click", function () { funcFiltrer(categorieActuelle.id) });
     ListeBoutons.appendChild(boutonElement);
 }
 
@@ -61,7 +61,7 @@ for (let i = 0; i < categories.length; i++) {
 // Ceci est la fonction Afficher_Liste qui sert à afficher tous les éléments d'une liste
 function Afficher_Liste(liste) {
     for (let i = 0; i < liste.length; i++) {
-        // On crée une letiable  contenant le premier élément des travaux
+        // On crée une variable  contenant le premier élément des travaux
 
         let work = liste[i];
         //Je crée un élément figure, puis img, puis figcaption
@@ -84,7 +84,7 @@ function Afficher_Liste(liste) {
     }
 }
 
-// On appelle la fonction Afficher_Liste avec comme paramètre works 
+// On appelle la fonction Afficher_Liste avec comme paramètre works,
 // pour afficher la liste complète des travaux lorsque l'utilisateur accède au site 
 
 Afficher_Liste(works)
@@ -100,8 +100,9 @@ function funcFiltrer(categorie) {
     // Je crée une variable qui est ma liste works filtrée ;         
     //Ceci est l'utilisation de la fonction filter pour trier la liste works
 
-    let works_filtres = works.filter(function (work) { return work.categoryId == categorie})
+    let works_filtres = works.filter(function (work) { return work.categoryId == categorie })
     //- On affiche, à l'aide d'une boucle for, la liste filtrée
     Afficher_Liste(works_filtres)
 }
 
+console.log(window.localStorage.getItem("token"))
