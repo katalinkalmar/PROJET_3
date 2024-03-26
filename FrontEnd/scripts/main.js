@@ -52,7 +52,6 @@ for (let i = 0; i < categories.length; i++) {
     boutonElement.id = categorieActuelle.name;
     boutonElement.value = categorieActuelle.name;
     boutonElement.type = "button";
-
     boutonElement.addEventListener("click", function () { funcFiltrer(categorieActuelle.id) });
     ListeBoutons.appendChild(boutonElement);
 }
