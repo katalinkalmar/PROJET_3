@@ -1,7 +1,7 @@
 // Je récupère les paramètres
 
 const form = document.querySelector('form');
-
+const box = document.querySelector('.loginbox');
 // Je soumets le formulaire
 form.addEventListener("submit", async function (event) {
 
@@ -28,19 +28,39 @@ form.addEventListener("submit", async function (event) {
 
     // Je me connecte au serveur 
 
-    // body: ce que j'envoie au serveur, chargeUtile est une variable, la version string de login_info
+    //try:je prévois une erreur et je mets en place de quoi l'intercepter
 
-    let reponse_login = await fetch("http://localhost:5678/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: chargeUtile
-    });
+    try {
+        // body: ce que j'envoie au serveur, chargeUtile est une variable, la version string de login_info
+        let reponse_login = await fetch("http://localhost:5678/api/users/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: chargeUtile
+        });
 
-    let login_token = await reponse_login.json();
-    console.log(login_token);
-let token = login_token.token;
-window.localStorage.setItem("token", token);
+        if (reponse_login.ok) {
+            let login_token = await reponse_login.json();
+
+            console.log(login_token);
+            let token = login_token.token;
+            window.localStorage.setItem("token", token);
+        } else {
+
+            throw new Error(reponse_login.status);
+        }
+
+        // en cas d'erreur intercepté dans le try, j'exécute le code suivant:
+    } catch (error) {
+        //je préviens le développeur
+        console.log("identification erronnée");
+
+        //je préviens l'utilisateur
+        const error_element = document.createElement("h3");
+        error_element.innerText = "Identification erronnée"
+        box.appendChild(error_element)
+
+    }
+
 
 });
 
-    
