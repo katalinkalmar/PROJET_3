@@ -44,6 +44,8 @@ form.addEventListener("submit", async function (event) {
             console.log(login_token);
             let token = login_token.token;
             window.localStorage.setItem("token", token);
+            // Redirection vers la page principale  
+            window.location.href = "index.html";
         } else {
 
             throw new Error(reponse_login.status);

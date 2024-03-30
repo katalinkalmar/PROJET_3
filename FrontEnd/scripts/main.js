@@ -2,23 +2,25 @@
 const reponse = await fetch("http://localhost:5678/api/works");
 //On récupère la liste des travaux à partir de la réponse du site
 const works = await reponse.json();
-console.log(works);
-// On récupère la div qui contiendra les différents travaux
-const gallery = document.querySelector(".gallery");
-
-
-
 //J'enregistre la réponse du serveur lorsque je lui demande les catégories
 const reponse_categorie = await fetch("http://localhost:5678/api/categories")
-
 // Je stocke dans une constante la liste des catégories des works
 const categories = await reponse_categorie.json()
-console.log(categories)
 
+// On récupère la div qui contiendra les différents travaux
+const gallery = document.querySelector(".gallery");
 // On récupère l'emplacement des boutons
 const ListeBoutons = document.getElementById("liste-de-boutons");
 
+//on récupère le token de l'utilisateur
+const token = localStorage.getItem("token")
 
+//on regarde si l'utilisateur est authentifié
+if (token === null) {
+    // parcours utilisateur non authentifié
+} else {
+    // parcours utilisateur authentifié   
+}
 
 // Maintenant on s'attaque aux bouton dynamiques.
 // Création du bouton "Tous"
@@ -31,7 +33,7 @@ boutonElement.value = "Tous";
 boutonElement.type = "button";
 
 boutonElement.addEventListener("click", function () {
-    console.log("Tous")
+
 
     // - On vide la gallery avec InnerHTML (voir cours Mettre à jour l'affichage de la page web OC)
     gallery.innerHTML = "";
@@ -89,21 +91,21 @@ function Afficher_Liste(liste) {
 Afficher_Liste(works)
 
 // Par la suite je vais relier les boutons créés de manière dynamique à une fonction qui trie et affiche les travaux
-
 function funcFiltrer(categorie) {
-    console.log(categorie)
     //Ici vient le code pour afficher les objets
     // - On vide la gallery avec InnerHTML (voir cours Mettre à jour l'affichage de la page web OC)
     gallery.innerHTML = "";
     // - On filtre la liste works
     // Je crée une variable qui est ma liste works filtrée ;         
-    //Ceci est l'utilisation de la fonction filter pour trier la liste works
 
+    //Ceci est l'utilisation de la fonction filter pour trier la liste works
     let works_filtres = works.filter(function (work) { return work.categoryId == categorie })
+
     //- On affiche, à l'aide d'une boucle for, la liste filtrée
     Afficher_Liste(works_filtres)
 }
 
+// ----- code de la modale-----
 let modal = null
 
 let previouslyFocusedElement = null
@@ -123,8 +125,9 @@ const openModal = async function (e) {
     modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
 
-/* on récupère la div modal-content*/
-    modal_content = document.getElementById("modal-content")
+
+
+    Afficher_Liste_modal(works)
 }
 
 const closeModal = function (e) {
@@ -145,35 +148,50 @@ const closeModal = function (e) {
     modal.addEventListener('animationend', hideModal)
 }
 
-const stopPropagation = function (e) {
-    e.stopPropagation()
-}
+const stopPropagation = function (e) { e.stopPropagation() }
 
-document.querySelectorAll('.js-modal').forEach(a => {
-    a.addEventListener('click', openModal)
-})
+document.querySelector('.js-modal').addEventListener('click', openModal)
+
 
 function Afficher_Liste_modal(liste) {
+    /* on récupère la div modal-content*/
+    let modal_content = document.getElementById("modal-content");
     for (let i = 0; i < liste.length; i++) {
         // On crée une variable  contenant le premier élément des travaux
-
         let work = liste[i];
-        //Je crée un élément figure, puis img, puis figcaption
-        const figureElement = document.createElement("figure");
-        const imageElement = document.createElement("img");
-        const nomElement = document.createElement("figcaption");
 
-        //Configuration des différents éléments
-        // Je configure l'attribut src de l'image avec l'URL du projet à afficher
-        imageElement.src = work.imageUrl;
-        imageElement.alt = work.title;
-        // Dans la balise nomElement je veux le innerText et je le définis par, dans mon work,le nom
-        nomElement.innerText = work.title;
+        const button_element = document.createElement("button");
+        button_element.classList.add("modal-card");
+        // on définie une fonction anonyme pour chacun des boutons
+button_element.addEventListener("click",function(){delete_work(work.id)} )
+
+
+
+
+
+        const img_element = document.createElement("img");
+        img_element.classList.add("modal-card-img");
+        img_element.src = work.imageUrl;
+        button_element.appendChild(img_element)
+
+
+
+
+
+
+        const trash_element = document.createElement("img");
+        trash_element.classList.add("modal-card-trash");
+        trash_element.src =  "./assets/icons/trash.svg";
+        button_element.appendChild(trash_element);
+
 
         //Dans ma gallery je rajoute un enfant qui est figureElement
-        modal_content.appendChild(figureElement);
-        //On rajoute dans la figure la balise img et figcaption
-        figureElement.appendChild(imageElement);
-        figureElement.appendChild(nomElement);
+        modal_content.appendChild(button_element);
     }
+}
+
+
+function delete_work(id){
+    console.log(id)
+    //rajouter un fetch pour supprimer les travaux(voir méthode login)
 }
