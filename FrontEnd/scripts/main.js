@@ -22,7 +22,7 @@ if (token === null) {
     // parcours utilisateur authentifié   
 }
 
-// Maintenant on s'attaque aux bouton dynamiques.
+// Maintenant on s'attaque aux boutons dynamiques.
 // Création du bouton "Tous"
 // On crée la balise input qui sont les boutons de la liste-de-boutons
 
@@ -33,7 +33,12 @@ boutonElement.value = "Tous";
 boutonElement.type = "button";
 
 boutonElement.addEventListener("click", function () {
+    dernier_bouton_actif.style.backgroundColor = "white";
+    dernier_bouton_actif.style.color = "#1D6154";
+    dernier_bouton_actif = boutonElement;
 
+    boutonElement.style.backgroundColor = "#1D6154";
+    boutonElement.style.color = "white"
 
     // - On vide la gallery avec InnerHTML (voir cours Mettre à jour l'affichage de la page web OC)
     gallery.innerHTML = "";
@@ -44,8 +49,9 @@ boutonElement.addEventListener("click", function () {
 
 // On incorpore le bouton dans la balise liste-des-boutons
 ListeBoutons.appendChild(boutonElement);
-
-
+let dernier_bouton_actif = boutonElement;
+boutonElement.style.backgroundColor = "#1D6154";
+boutonElement.style.color = "white"
 
 // Création des boutons pour chaque catégorie
 for (let i = 0; i < categories.length; i++) {
@@ -54,7 +60,16 @@ for (let i = 0; i < categories.length; i++) {
     boutonElement.id = categorieActuelle.name;
     boutonElement.value = categorieActuelle.name;
     boutonElement.type = "button";
-    boutonElement.addEventListener("click", function () { funcFiltrer(categorieActuelle.id) });
+    boutonElement.addEventListener("click", function () {
+        dernier_bouton_actif.style.backgroundColor = "white";
+        dernier_bouton_actif.style.color = "#1D6154";
+        dernier_bouton_actif = boutonElement;
+
+        boutonElement.style.backgroundColor = "#1D6154";
+        boutonElement.style.color = "white"
+        funcFiltrer(categorieActuelle.id);
+
+    });
     ListeBoutons.appendChild(boutonElement);
 }
 
@@ -162,8 +177,8 @@ function Afficher_Liste_modal(liste) {
 
         const button_element = document.createElement("button");
         button_element.classList.add("modal-card");
-        // on définie une fonction anonyme pour chacun des boutons
-button_element.addEventListener("click",function(){delete_work(work.id)} )
+        // on définit une fonction anonyme pour chacun des boutons
+        button_element.addEventListener("click", function () { delete_work(work.id) })
 
 
 
@@ -181,7 +196,7 @@ button_element.addEventListener("click",function(){delete_work(work.id)} )
 
         const trash_element = document.createElement("img");
         trash_element.classList.add("modal-card-trash");
-        trash_element.src =  "./assets/icons/trash.svg";
+        trash_element.src = "./assets/icons/trash.svg";
         button_element.appendChild(trash_element);
 
 
@@ -191,7 +206,10 @@ button_element.addEventListener("click",function(){delete_work(work.id)} )
 }
 
 
-function delete_work(id){
+function delete_work(id) {
     console.log(id)
-    //rajouter un fetch pour supprimer les travaux(voir méthode login)
+    fetch(`http://localhost:5678/api/works/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+    })
 }
