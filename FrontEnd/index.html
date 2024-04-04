@@ -51,7 +51,7 @@
 			<h2>Mes Projets <a href="#modal1" class="js-modal">modale</a></h2>
 			<!--Ici viendront les boutons correspondant aux filtres-->
 			<form id="liste-de-boutons">
-			<!--<input id="tous" type="button" value="tous" />
+				<!--<input id="tous" type="button" value="tous" />
 				<input id="objets" type="button" value="objets" />
 				<input id="appartements" type="button" value="appartements" />
 				<input id="hotels-et-restaurants" type="button" value="hotels-et-restaurants" />-->
@@ -117,6 +117,31 @@
 			</div>
 
 		</div>
+		<div class="modal-ajout">
+			<form enctype="multipart/form-data" method="post" name="fileinfo">
+
+				<!--Boite pour l'ajout d'une photo-->
+				<div class="ajouter-image">
+					<input type="file" name="image" required accept="image/png, image/jpeg" />
+				</div>
+
+				<!--Zone de texte pour le titre-->
+				<label>Titre</label>
+				<input type="text" name="title" required>
+
+				<!--sélecteur pour la catégorie-->
+				<label> Catégorie </label>
+				<select name="category" required>
+					<option value=""></option>
+				</select>
+
+				<div class="modal-footer">
+					<hr />
+					<input type="submit" id="js-modal-valider" value="Valider">
+				</div>
+			</form>
+		</div>
+
 </aside>
 
 </html>

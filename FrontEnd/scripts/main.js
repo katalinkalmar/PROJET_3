@@ -208,8 +208,34 @@ function Afficher_Liste_modal(liste) {
 
 function delete_work(id) {
     console.log(id)
+    /* D'après le swagger on rajoute le token dans le header*/
     fetch(`http://localhost:5678/api/works/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
     })
+}
+
+//On récupère parmi les formularies celui qui s'appelle fileinfo
+const form = document.forms.namedItem("fileinfo");
+
+form.addEventListener("submit", (event) => {
+    // On stocke les données du formulaire en format FormData   
+    const formData = new FormData(form);
+
+    const request = new XMLHttpRequest();
+    request.open("POST", "http://localhost:5678/api/works",true);
+    request.setRequestHeader("Authorization", `Bearer ${token}`);
+    request.send(formData);
+    event.preventDefault();
+},
+    false,
+);
+
+// Remplissage du select pour les catégories
+const categorieElement = form.querySelector("select");
+for (let i = 0; i < categories.length; i++) {
+    let optionElement = document.createElement("option");
+    optionElement.value = categories[i].id;
+    optionElement.innerText = categories[i].name;
+    categorieElement.appendChild(optionElement);
 }

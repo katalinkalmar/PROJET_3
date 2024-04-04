@@ -212,8 +212,8 @@ li:hover {
 	flex-direction: column;
 }
 
-/* ça ne marche pas !!!*/
-#login input {
+
+#loginform input {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
