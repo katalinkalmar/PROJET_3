@@ -12,16 +12,28 @@ const gallery = document.querySelector(".gallery");
 // On récupère l'emplacement des boutons
 const ListeBoutons = document.getElementById("liste-de-boutons");
 
+//bouton login/logout
+const loginButton = document.getElementById("login-button");
+
+
 //on récupère le token de l'utilisateur
 const token = localStorage.getItem("token")
 
 //on regarde si l'utilisateur est authentifié
 if (token === null) {
     // parcours utilisateur non authentifié
+    loginButton.addEventListener("click", loginFunction)
 } else {
     // parcours utilisateur authentifié   
+    loginButton.innerText = "logout"
+    loginButton.addEventListener("click", logoutFunction )
 }
 
+function logoutFunction() {
+  localStorage.removeItem("token")  
+  window.location.reload()
+}
+function loginFunction() {window.location.href = "login_page.html"}
 // Maintenant on s'attaque aux boutons dynamiques.
 // Création du bouton "Tous"
 // On crée la balise input qui sont les boutons de la liste-de-boutons
@@ -181,17 +193,10 @@ function Afficher_Liste_modal(liste) {
         button_element.addEventListener("click", function () { delete_work(work.id) })
 
 
-
-
-
         const img_element = document.createElement("img");
         img_element.classList.add("modal-card-img");
         img_element.src = work.imageUrl;
         button_element.appendChild(img_element)
-
-
-
-
 
 
         const trash_element = document.createElement("img");
@@ -212,7 +217,12 @@ function delete_work(id) {
     fetch(`http://localhost:5678/api/works/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
-    })
+    }).then(
+        //suppression du travail dans le html  
+    ).catch(
+        //affichage de l'erreur
+        (error) => console.log(error)
+    )
 }
 
 //On récupère parmi les formularies celui qui s'appelle fileinfo
@@ -222,10 +232,17 @@ form.addEventListener("submit", (event) => {
     // On stocke les données du formulaire en format FormData   
     const formData = new FormData(form);
 
-    const request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:5678/api/works",true);
-    request.setRequestHeader("Authorization", `Bearer ${token}`);
-    request.send(formData);
+
+ fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body : formData
+}).then(
+
+).catch(
+    (error) => console.log(error)
+)
+
     event.preventDefault();
 },
     false,
