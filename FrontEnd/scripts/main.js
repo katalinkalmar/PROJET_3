@@ -15,6 +15,7 @@ const ListeBoutons = document.getElementById("liste-de-boutons");
 //bouton login/logout
 const loginButton = document.getElementById("login-button");
 
+console.log("chargement de la page")
 
 //on récupère le token de l'utilisateur
 const token = localStorage.getItem("token")
@@ -26,14 +27,14 @@ if (token === null) {
 } else {
     // parcours utilisateur authentifié   
     loginButton.innerText = "logout"
-    loginButton.addEventListener("click", logoutFunction )
+    loginButton.addEventListener("click", logoutFunction)
 }
 
 function logoutFunction() {
-  localStorage.removeItem("token")  
-  window.location.reload()
+    localStorage.removeItem("token")
+    window.location.reload()
 }
-function loginFunction() {window.location.href = "login_page.html"}
+function loginFunction() { window.location.href = "login_page.html" }
 // Maintenant on s'attaque aux boutons dynamiques.
 // Création du bouton "Tous"
 // On crée la balise input qui sont les boutons de la liste-de-boutons
@@ -140,7 +141,7 @@ let previouslyFocusedElement = null
 const openModal = async function (e) {
     e.preventDefault()
     const target = e.target.getAttribute('href')
-
+    console.log("modale")
     modal = document.querySelector(target)
 
     previouslyFocusedElement = document.querySelector(':focus')
@@ -190,7 +191,7 @@ function Afficher_Liste_modal(liste) {
         const button_element = document.createElement("button");
         button_element.classList.add("modal-card");
         // on définit une fonction anonyme pour chacun des boutons
-        button_element.addEventListener("click", function () { delete_work(work.id) })
+        button_element.addEventListener("click", function (event) { delete_work(event, work.id) })
 
 
         const img_element = document.createElement("img");
@@ -211,39 +212,48 @@ function Afficher_Liste_modal(liste) {
 }
 
 
-function delete_work(id) {
+function delete_work(event, id) {
     console.log(id)
+    event.preventDefault()
     /* D'après le swagger on rajoute le token dans le header*/
     fetch(`http://localhost:5678/api/works/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
     }).then(
         //suppression du travail dans le html  
+       
     ).catch(
         //affichage de l'erreur
-        (error) => console.log(error)
+        (error) => {
+            console.log(error)
+           
+        }
     )
 }
 
-//On récupère parmi les formularies celui qui s'appelle fileinfo
+//On récupère parmi les formulaires celui qui s'appelle fileinfo
 const form = document.forms.namedItem("fileinfo");
 
 form.addEventListener("submit", (event) => {
+    event.preventDefault()
     // On stocke les données du formulaire en format FormData   
     const formData = new FormData(form);
 
 
- fetch("http://localhost:5678/api/works", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body : formData
-}).then(
+    fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+    }).then(
 
-).catch(
-    (error) => console.log(error)
-)
+    ).catch(
+        (error) => {
+            console.log(error)
+            
+        }
+    )
 
-    event.preventDefault();
+
 },
     false,
 );
