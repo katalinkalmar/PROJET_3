@@ -1,7 +1,7 @@
 // On stocke la réponse du serveur après lui avoir demandé les travaux//
 const reponse = await fetch("http://localhost:5678/api/works");
 //On récupère la liste des travaux à partir de la réponse du site
-const works = await reponse.json();
+let works = await reponse.json();
 //J'enregistre la réponse du serveur lorsque je lui demande les catégories
 const reponse_categorie = await fetch("http://localhost:5678/api/categories")
 // Je stocke dans une constante la liste des catégories des works
@@ -53,9 +53,6 @@ boutonElement.addEventListener("click", function () {
     boutonElement.style.backgroundColor = "#1D6154";
     boutonElement.style.color = "white"
 
-    // - On vide la gallery avec InnerHTML (voir cours Mettre à jour l'affichage de la page web OC)
-    gallery.innerHTML = "";
-
     //- On affiche, la liste complète
     Afficher_Liste(works)
 });
@@ -89,10 +86,13 @@ for (let i = 0; i < categories.length; i++) {
 
 // Ceci est la fonction Afficher_Liste qui sert à afficher tous les éléments d'une liste
 function Afficher_Liste(liste) {
+    // - On vide la gallery avec InnerHTML avant d'afficher les nouveaux éléments
+    gallery.innerHTML = "";
+
     for (let i = 0; i < liste.length; i++) {
         // On crée une variable  contenant le premier élément des travaux
-
         let work = liste[i];
+
         //Je crée un élément figure, puis img, puis figcaption
         const figureElement = document.createElement("figure");
         const imageElement = document.createElement("img");
@@ -121,8 +121,7 @@ Afficher_Liste(works)
 // Par la suite je vais relier les boutons créés de manière dynamique à une fonction qui trie et affiche les travaux
 function funcFiltrer(categorie) {
     //Ici vient le code pour afficher les objets
-    // - On vide la gallery avec InnerHTML (voir cours Mettre à jour l'affichage de la page web OC)
-    gallery.innerHTML = "";
+
     // - On filtre la liste works
     // Je crée une variable qui est ma liste works filtrée ;         
 
@@ -184,6 +183,8 @@ document.querySelector('.js-modal').addEventListener('click', openModal)
 function Afficher_Liste_modal(liste) {
     /* on récupère la div modal-content*/
     let modal_content = document.getElementById("modal-content");
+    // - On vide la gallery avec InnerHTML avant d'afficher les nouveaux éléments
+    modal_content.innerHTML = "";
     for (let i = 0; i < liste.length; i++) {
         // On crée une variable  contenant le premier élément des travaux
         let work = liste[i];
@@ -191,7 +192,7 @@ function Afficher_Liste_modal(liste) {
         const button_element = document.createElement("button");
         button_element.classList.add("modal-card");
         // on définit une fonction anonyme pour chacun des boutons
-        button_element.addEventListener("click", function (event) { delete_work(event, work.id) })
+        button_element.addEventListener("click", function () { delete_work(work.id) })
 
 
         const img_element = document.createElement("img");
@@ -212,21 +213,28 @@ function Afficher_Liste_modal(liste) {
 }
 
 
-function delete_work(event, id) {
+function delete_work(id) {
     console.log(id)
-    event.preventDefault()
+
     /* D'après le swagger on rajoute le token dans le header*/
     fetch(`http://localhost:5678/api/works/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
-    }).then(
+    }).then(function () {
         //suppression du travail dans le html  
-       
-    ).catch(
+        // on filtre notre liste works en retirant celui qui a été supprimé sur le serveur
+        works = works.filter(function (work) {
+            return work.id !== id
+        })
+        // on réactualise l'affichage avec la nouvelle liste
+        Afficher_Liste(works)
+        Afficher_Liste_modal(works)
+
+    }).catch(
         //affichage de l'erreur
         (error) => {
             console.log(error)
-           
+
         }
     )
 }
@@ -244,12 +252,23 @@ form.addEventListener("submit", (event) => {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData
-    }).then(
+    }).then(function (reponse) {
+        //on formate la réponse en format lisible
+        const result = reponse.json()
+        result.then(function (work) {
+            console.log(work)
+            // on rajoute le travail retourné par le serveur à notre liste de work
+            works.push(work)
+            Afficher_Liste(works)
+            Afficher_Liste_modal(works)
+        })
+
+    }
 
     ).catch(
         (error) => {
             console.log(error)
-            
+
         }
     )
 

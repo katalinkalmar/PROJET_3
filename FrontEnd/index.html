@@ -92,7 +92,7 @@
 
 
 </body>
-           <!--Ci-dessous la modale -->
+<!--Ci-dessous la modale -->
 <aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-labelledby="titlemodal" style="display:none;">
 	<div class="modal-wrapper js-modal-stop">
 
@@ -122,11 +122,18 @@
 		<!--Ci-dessous la modale d'ajout-->
 		<div class="modal-ajout">
 			<form enctype="multipart/form-data" method="post" name="fileinfo">
-
-				<!--Boite pour l'ajout d'une photo-->
-				<div class="ajouter-image">
-					<input type="file" name="image" required accept="image/png, image/jpeg" />
+				<div class="bluebox">
+					<!--Boite pour l'ajout d'une photo-->
+					<div class="ajouter-image">
+						<img>
+						<label for="input-image">+ Ajouter photo</label>
+						<p>jpg, png : 4mo max</p>
+						<input id="input-image" type="file" name="image" required accept="image/png, image/jpg" />
+					</div>
+					<label for="input-image" class="form-image-preview"></label>
 				</div>
+
+
 
 				<!--Zone de texte pour le titre-->
 				<label>Titre</label>
