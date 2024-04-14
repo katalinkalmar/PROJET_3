@@ -136,12 +136,18 @@ table {
 
 /** end reset css**/
 
+html {
+	height: 100vh;
+}
+
 body {
 	max-width: 1140px;
-	min-height: 1024px;
+	height: 100%;
 	margin: auto;
 	font-family: 'Work Sans';
 	font-size: 14px;
+	background-color: #FFFEF8;
+	justify-items: space-between;
 }
 
 header {
@@ -150,7 +156,7 @@ header {
 	margin: 50px 0
 }
 
-section {
+main {
 	margin: 50px 0
 }
 
@@ -181,7 +187,11 @@ nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
+}
 
+nav li a:visited {
+	color: black;
+	text-decoration: none;
 }
 
 nav li {
@@ -196,60 +206,72 @@ li:hover {
 /* fin du header                 */
 
 .loginbox {
+	/* ---------------------------------------------------------------------------------- */
+	display: flex;
 	width: 50%;
 	margin: auto;
+	flex-direction: column;
+	align-items: center;
 }
 
-#login>* {
-	text-align: center;
+.loginbox a {
+	/* ---------------------------------------------------------------------------------- */
+	color: #3D3D3D;
+}
 
+.loginbox a:visited {
+	/* ---------------------------------------------------------------------------------- */
+	color: #3D3D3D;
 }
 
 #loginform {
+	/* ---------------------------------------------------------------------------------- */
 	text-align: left;
-	margin-top: 30px;
+	margin: 30px 0;
 	display: flex;
 	flex-direction: column;
+	width: 380px;
+	gap: 30px;
+	align-items: center;
 }
 
 
 #loginform input {
+	/* ---------------------------------------------------------------------------------- */
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	width: 100%;
+}
+
+#loginform div {
+	/* ---------------------------------------------------------------------------------- */
+	width: 100%;
 }
 
 #se-connecter {
-	width: 179px;
-	height: 36px;
+	/* ---------------------------------------------------------------------------------- */
 	border-radius: 60px;
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
 	background-color: #1D6154;
-	padding: 10px 15px
+	padding: 10px 40px;
+	border-width: 1px;
+	border-color: #1D6154;
+	width: auto;
 }
 
-
-.loginbox label {
-	margin: 2em 0 1em 0;
-}
-
-
-input[type="submit"] {
-	font-family: 'Syne';
-	font-weight: 700;
-	color: white;
-	background-color: #1D6154;
-	margin: 2em auto;
-	width: 180px;
-	text-align: center;
-	border-radius: 60px;
+footer {
+	/* ---------------------------------------------------------------------------------- */
+	background-color: #FFF;
 }
 
 footer nav ul {
+	/* ---------------------------------------------------------------------------------- */
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
+	justify-items: center;
+	padding: 20px;
 }

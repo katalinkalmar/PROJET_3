@@ -419,3 +419,7 @@ footer nav ul {
 	height: 17px;
 	transform: translate(-20px, 5px);
 }
+
+.ouvremodal {
+	display: none;
+}
