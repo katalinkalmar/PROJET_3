@@ -16,11 +16,11 @@ const ListeBoutons = document.getElementById("liste-de-boutons");
 const loginButton = document.getElementById("login-button");
 
 
-console.log("chargement de la page") 
+console.log("chargement de la page")
 
 
 //on récupère le token de l'utilisateur
-const token = window.localStorage.getItem("token") 
+const token = window.localStorage.getItem("token")
 //on regarde si l'utilisateur est authentifié
 if (token === null) {
     // parcours utilisateur non authentifié
@@ -29,17 +29,43 @@ if (token === null) {
     // parcours utilisateur authentifié   
     loginButton.innerText = "logout"
     loginButton.addEventListener("click", logoutFunction)
+
     const bouton_outil = document.querySelector(".js-modal")
-    bouton_outil.style.display = "inline"
+    bouton_outil.style.display = "inline-block"
+    bouton_outil.addEventListener('click', openModal);
+
+    ListeBoutons.style.display = "none"
 }
 
 function logoutFunction() {
-    window.localStorage.removeItem("token") 
-    window.location.reload() 
+    window.localStorage.removeItem("token")
+    window.location.reload()
 }
 function loginFunction() { window.location.href = "login_page.html" }
 
+//-----navigation dans la modal-----//
 
+const nextButtonModal = document.querySelector(".js-modal-next")
+const returnButtonModal = document.querySelector(".js-modal-return")
+
+
+const modalGalery = document.querySelector(".js-modal-gallery")
+const modalForm = document.querySelector(".js-modal-form")
+
+modalForm.style.display = "none"
+returnButtonModal.style.opacity = 0
+
+// le bouton next qui permet ajouter une photo fait disparaitre la galerie pour faire apparaitre le formulaire
+nextButtonModal.addEventListener("click", function () {
+    modalGalery.style.display = "none"
+    modalForm.style.display = "flex"
+    returnButtonModal.style.opacity = 1
+})
+returnButtonModal.addEventListener("click", function () {
+    modalGalery.style.display = "flex"
+    modalForm.style.display = "none"
+    returnButtonModal.style.opacity = 0
+})
 
 // Maintenant on s'attaque aux boutons dynamiques.
 // Création du bouton "Tous"
@@ -77,7 +103,7 @@ for (let i = 0; i < categories.length; i++) {
     boutonElement.id = categorieActuelle.name;
     boutonElement.value = categorieActuelle.name;
     boutonElement.type = "button";
-  
+
     boutonElement.addEventListener("click", function () {
         dernier_bouton_actif.style.backgroundColor = "white";
         dernier_bouton_actif.style.color = "#1D6154";
@@ -146,32 +172,24 @@ let modal = null;
 
 
 
-const openModal = async function (e) {
+function openModal(e) {
     e.preventDefault();
-
-    //dans notre cas target est la valeur de href , càd #modal
-    const target = e.target.getAttribute('href');
-    console.log("modal");
-    modal = document.querySelector(target);
-
-
+    modal = document.querySelector("#modal");
     modal.style.display = null;
 
     modal.removeAttribute('aria-hidden');
     modal.setAttribute('aria-modal', 'true');
 
-    modal.addEventListener('click', closeModal)
+    modal.addEventListener('click', closeModal);
     modal.querySelector('.js-modal-close').addEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation);
-
-
 
     Afficher_Liste_modal(works);
 }
 
 const closeModal = function (e) {
     if (modal === null) return;
-   
+
     e.preventDefault();
 
     modal.setAttribute('aria-hidden', 'true');
@@ -189,7 +207,7 @@ const closeModal = function (e) {
 
 function stopPropagation(e) { e.stopPropagation(); }
 
-document.querySelector('.js-modal').addEventListener('click', openModal);
+
 
 
 function Afficher_Liste_modal(liste) {
@@ -202,7 +220,7 @@ function Afficher_Liste_modal(liste) {
     let work = null
     for (let i = 0; i < liste.length; i++) {
         // On crée une variable  contenant les travaux
-         work = liste[i];
+        work = liste[i];
 
         const button_element = document.createElement("button");
         button_element.classList.add("modal-card");
@@ -227,8 +245,8 @@ function Afficher_Liste_modal(liste) {
     }
 }
 
-//On récupère parmi les formulaires celui qui s'appelle fileinfo
-const form = document.forms.namedItem("fileinfo");
+//On récupère le formulaire pour l'envoi de fichier
+const form = document.getElementById("js-modal-form");
 
 form.addEventListener("submit", (event) => {
     event.preventDefault()
@@ -241,25 +259,21 @@ form.addEventListener("submit", (event) => {
         headers: { Authorization: `Bearer ${token}` },
         body: formData
     }).then(function (reponse) {
-        //on formate la réponse en format lisible
-        const result = reponse.json();
-        result.then(function (work) {
-            console.log(work);
-            // on rajoute le travail retourné par le serveur à notre liste de work
-            works.push(work);
-            Afficher_Liste(works);
-            Afficher_Liste_modal(works);
-        })
-
-    }
-
-    ).catch(
-        (error) => {
-            console.log(error)
-
+        if (reponse.ok) {
+            //on formate la réponse en format lisible
+            const result = reponse.json();
+            result.then(function (work) {
+                console.log(work);
+                // on rajoute le travail retourné par le serveur à notre liste de work
+                works.push(work);
+                Afficher_Liste(works);
+                Afficher_Liste_modal(works);
+            })
+        } else {
+            throw new Error(reponse.status)
         }
-    )
 
+    }).catch((error) => { console.log(error) })
 
 });
 
@@ -271,15 +285,20 @@ function delete_work(id) {
     fetch(`http://localhost:5678/api/works/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
-    }).then(function () {
-        //suppression du travail dans le html  
-        // on filtre notre liste works en retirant celui qui a été supprimé sur le serveur
-        works = works.filter(function (work) {
-            return work.id !== id
-        })
-        // on réactualise l'affichage avec la nouvelle liste
-        Afficher_Liste(works);
-        Afficher_Liste_modal(works);
+    }).then(function (result) {
+        if (result.ok) {
+            //suppression du travail dans le html  
+            // on filtre notre liste works en retirant celui qui a été supprimé sur le serveur
+            works = works.filter(function (work) {
+                return work.id !== id
+            })
+            // on réactualise l'affichage avec la nouvelle liste
+            Afficher_Liste(works);
+            Afficher_Liste_modal(works);
+
+        } else {
+            throw new Error(result.status)
+        }
 
     }).catch(
         //affichage de l'erreur

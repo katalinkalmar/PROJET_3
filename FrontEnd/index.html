@@ -48,7 +48,15 @@
 			</article>
 		</section>
 		<section id="portfolio">
-			<h2>Mes Projets <a href="#modal" class="js-modal ouvremodal" >modale</a></h2>
+			<h2>
+				Mes Projets
+				<button class="js-modal button-open-modal">
+					<div>
+						<img src="./assets/icons/modifier.png">
+						modifier
+					</div>
+				</button>
+			</h2>
 			<!--Ici viendront les boutons correspondant aux filtres-->
 			<form id="liste-de-boutons">
 				<!--<input id="tous" type="button" value="tous" />
@@ -98,55 +106,59 @@
 	<div class="modal-wrapper js-modal-stop">
 
 		<div class="modal-header">
-			<button class="js-modal-return">=</button>
-			<button class="js-modal-close">X</button>
+			<button class="js-modal-return returnButton"><img src="./assets/icons/arrow-left.svg"></button>
+			<button class="js-modal-close closeButton"><img src="./assets/icons/xmark.svg"></button>
 		</div>
 
-		<div class="modal-main">
-			<h1 id="titlemodal">Conditions d'utilisations</h1>
+		<div class="modal-main js-modal-gallery">
+			<h3 class="titlemodal">Galerie photo</h3>
 			<div id="modal-content">
 				<!--Ici viendra le contenu de notre modale-->
 				<!--<button class="modal-card">
 						<img class="modal-card-img" src="./assets/images/abajour-tahina.png">
 						<img class="modal-card-trash" src = "./assets/icons/trash.svg">
-				</button> 	-->
+				</button> -->
 
 			</div>
 
 			<div class="modal-footer">
 				<hr />
-				<button class="js-modal-next">ajouter une photo</button>
+				<button class="js-modal-next modal-button">Ajouter une photo</button>
 			</div>
 
 		</div>
 
-	
-	<!--Ci-dessous la modale d'ajout-->
-		<div class="modal-ajout">
-			<form enctype="multipart/form-data" method="post" name="fileinfo">
-				<div class="bluebox">
-					<!--Boite pour l'ajout d'une photo-->
-					<div class="ajouter-image">
-						<img>
-						<label for="input-image">+ Ajouter photo</label>
-						<p>jpg, png : 4mo max</p>
-						<input id="input-image" type="file" name="image" required accept="image/png, image/jpg" />
+
+		<!--Ci-dessous la modale d'ajout-->
+		<div class="modal-main js-modal-form">
+			<h3 class="titlemodal">Ajout photo</h3>
+			<form enctype="multipart/form-data" method="post" id="js-modal-form">
+				<div class="modal-form">
+					<div class="bluebox">
+						<!--Boite pour l'ajout d'une photo-->
+						<div class="ajouter-image">
+							<img src="./assets/icons/picture.png">
+							<label for="input-image" class="img-upload-button">+ Ajouter photo</label>
+							<p>jpg, png : 4mo max</p>
+							<input id="input-image" type="file" name="image" required accept="image/png, image/jpg" />
+						</div>
+						<label for="input-image" class="form-image-preview"></label>
 					</div>
-					<label for="input-image" class="form-image-preview"></label>
+
+
+					<div class="inputFileDiv">
+						<!--Zone de texte pour le titre-->
+						<label>Titre</label>
+						<input type="text" name="title" required>
+					</div>
+					<div class="inputFileDiv">
+						<!--sélecteur pour la catégorie-->
+						<label> Catégorie </label>
+						<select name="category" required>
+							<option value=""></option>
+						</select>
+					</div>
 				</div>
-
-
-
-				<!--Zone de texte pour le titre-->
-				<label>Titre</label>
-				<input type="text" name="title" required>
-
-				<!--sélecteur pour la catégorie-->
-				<label> Catégorie </label>
-				<select name="category" required>
-					<option value=""></option>
-				</select>
-
 				<div class="modal-footer">
 					<hr />
 					<input type="submit" id="js-modal-valider" value="Valider">
