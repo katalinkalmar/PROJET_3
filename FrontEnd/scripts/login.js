@@ -66,3 +66,4 @@ form.addEventListener("submit", async function (event) {
 
 });
 
+document.getElementById("mp-button").addEventListener("click", ()=>window.location.href = "index.html")

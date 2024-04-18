@@ -19,6 +19,12 @@
 	</head>
 
 <body>
+<div class="bandeau">
+	<div class="titre-edition">
+		<img src="./assets/icons/modifier.png">
+		<h5>Mode édition</h5>
+	</div>
+</div>
 
 	<header>
 		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
@@ -78,12 +84,15 @@
 			<h2>Contact</h2>
 			<p>Vous avez un projet ? Discutons-en !</p>
 			<form method="post" action="#">
-				<label for="name">Nom</label>
-				<input type="text" name="name" id="name">
-				<label for="email">Email</label>
-				<input type="email" name="email" id="email">
-				<label for="message">Message</label>
-				<textarea name="message" id="message" cols="30" rows="10"></textarea>
+				<div><label for="name">Nom</label>
+				<input type="text" name="name" id="name"></div>
+
+				<div><label for="email">Email</label>
+				<input type="email" name="email" id="email"></div>
+
+				<div><label for="message">Message</label>
+				<textarea name="message" id="message" cols="30" rows="10"></textarea></div>
+
 				<input type="submit" value="Envoyer">
 			</form>
 		</section>
@@ -161,7 +170,7 @@
 				</div>
 				<div class="modal-footer">
 					<hr />
-					<input type="submit" id="js-modal-valider" value="Valider">
+					<input type="submit" id="js-modal-valider" value="Valider" >
 				</div>
 			</form>
 		</div>

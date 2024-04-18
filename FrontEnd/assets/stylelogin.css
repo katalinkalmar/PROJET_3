@@ -203,6 +203,17 @@ li:hover {
 	color: #B1663C;
 }
 
+#mp-button {
+	border-width: 0;
+	background-color: #FFFEF8;
+	font-family: 'Work Sans';
+	font-size: 1.0em;
+}
+
+#mp-button:hover {
+	color: #B1663C;
+}
+
 /* fin du header                 */
 
 .loginbox {

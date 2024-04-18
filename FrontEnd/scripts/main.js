@@ -1,73 +1,59 @@
+//===récupération des travaux depuis le back-end
+
 // On stocke la réponse du serveur après lui avoir demandé les travaux//
 const reponse = await fetch("http://localhost:5678/api/works");
 //On récupère la liste des travaux à partir de la réponse du site
 let works = await reponse.json();
+
+
+// On récupère la div qui contiendra les différents travaux
+const gallery = document.querySelector(".gallery");
+// Ceci est la fonction Afficher_Liste qui sert à afficher tous les éléments d'une liste
+function Afficher_Liste(liste) {
+    // - On vide la gallery avec InnerHTML avant d'afficher les nouveaux éléments
+    gallery.innerHTML = "";
+
+    for (let i = 0; i < liste.length; i++) {
+        // On crée une variable  contenant le premier élément des travaux
+        let work = liste[i];
+
+        //Je crée un élément figure, puis img, puis figcaption
+        const figureElement = document.createElement("figure");
+        const imageElement = document.createElement("img");
+        const nomElement = document.createElement("figcaption");
+
+        //Configuration des différents éléments
+        // Je configure l'attribut src de l'image avec l'URL du work à afficher
+        imageElement.src = work.imageUrl;
+        imageElement.alt = work.title;
+        // Dans la balise nomElement je veux le innerText et je le définis par, dans mon work,le nom
+        nomElement.innerText = work.title;
+
+        //Dans ma gallery je rajoute un enfant qui est figureElement
+        gallery.appendChild(figureElement);
+        //On rajoute dans la figure la balise img et figcaption
+        figureElement.appendChild(imageElement);
+        figureElement.appendChild(nomElement);
+    }
+}
+
+// On appelle la fonction Afficher_Liste avec comme paramètre works,
+// pour afficher la liste complète des travaux lorsque l'utilisateur accède au site 
+Afficher_Liste(works);
+
+
+
+
+//===réalisation du filtre des travaux
+
 //J'enregistre la réponse du serveur lorsque je lui demande les catégories
 const reponse_categorie = await fetch("http://localhost:5678/api/categories")
 // Je stocke dans une constante la liste des catégories des works
 const categories = await reponse_categorie.json()
-
-// On récupère la div qui contiendra les différents travaux
-const gallery = document.querySelector(".gallery");
 // On récupère l'emplacement des boutons
 const ListeBoutons = document.getElementById("liste-de-boutons");
 
-//bouton login/logout
-const loginButton = document.getElementById("login-button");
 
-
-console.log("chargement de la page")
-
-
-//on récupère le token de l'utilisateur
-const token = window.localStorage.getItem("token")
-//on regarde si l'utilisateur est authentifié
-if (token === null) {
-    // parcours utilisateur non authentifié
-    loginButton.addEventListener("click", loginFunction)
-} else {
-    // parcours utilisateur authentifié   
-    loginButton.innerText = "logout"
-    loginButton.addEventListener("click", logoutFunction)
-
-    const bouton_outil = document.querySelector(".js-modal")
-    bouton_outil.style.display = "inline-block"
-    bouton_outil.addEventListener('click', openModal);
-
-    ListeBoutons.style.display = "none"
-}
-
-function logoutFunction() {
-    window.localStorage.removeItem("token")
-    window.location.reload()
-}
-function loginFunction() { window.location.href = "login_page.html" }
-
-//-----navigation dans la modal-----//
-
-const nextButtonModal = document.querySelector(".js-modal-next")
-const returnButtonModal = document.querySelector(".js-modal-return")
-
-
-const modalGalery = document.querySelector(".js-modal-gallery")
-const modalForm = document.querySelector(".js-modal-form")
-
-modalForm.style.display = "none"
-returnButtonModal.style.opacity = 0
-
-// le bouton next qui permet ajouter une photo fait disparaitre la galerie pour faire apparaitre le formulaire
-nextButtonModal.addEventListener("click", function () {
-    modalGalery.style.display = "none"
-    modalForm.style.display = "flex"
-    returnButtonModal.style.opacity = 1
-})
-returnButtonModal.addEventListener("click", function () {
-    modalGalery.style.display = "flex"
-    modalForm.style.display = "none"
-    returnButtonModal.style.opacity = 0
-})
-
-// Maintenant on s'attaque aux boutons dynamiques.
 // Création du bouton "Tous"
 // On crée la balise input qui sont les boutons de la liste-de-boutons
 const boutonElement = document.createElement("input");
@@ -117,41 +103,6 @@ for (let i = 0; i < categories.length; i++) {
     ListeBoutons.appendChild(boutonElement);
 }
 
-
-// Ceci est la fonction Afficher_Liste qui sert à afficher tous les éléments d'une liste
-function Afficher_Liste(liste) {
-    // - On vide la gallery avec InnerHTML avant d'afficher les nouveaux éléments
-    gallery.innerHTML = "";
-
-    for (let i = 0; i < liste.length; i++) {
-        // On crée une variable  contenant le premier élément des travaux
-        let work = liste[i];
-
-        //Je crée un élément figure, puis img, puis figcaption
-        const figureElement = document.createElement("figure");
-        const imageElement = document.createElement("img");
-        const nomElement = document.createElement("figcaption");
-
-        //Configuration des différents éléments
-        // Je configure l'attribut src de l'image avec l'URL du work à afficher
-        imageElement.src = work.imageUrl;
-        imageElement.alt = work.title;
-        // Dans la balise nomElement je veux le innerText et je le définis par, dans mon work,le nom
-        nomElement.innerText = work.title;
-
-        //Dans ma gallery je rajoute un enfant qui est figureElement
-        gallery.appendChild(figureElement);
-        //On rajoute dans la figure la balise img et figcaption
-        figureElement.appendChild(imageElement);
-        figureElement.appendChild(nomElement);
-    }
-}
-
-// On appelle la fonction Afficher_Liste avec comme paramètre works,
-// pour afficher la liste complète des travaux lorsque l'utilisateur accède au site 
-
-Afficher_Liste(works);
-
 // Par la suite je vais relier les boutons créés de manière dynamique à une fonction qui trie et affiche les travaux par catégorie
 function funcFiltrer(categorie) {
     //Ici vient le code pour afficher les objets
@@ -166,11 +117,47 @@ function funcFiltrer(categorie) {
     Afficher_Liste(works_filtres);
 }
 
-// ----- code de la modale-----
 
+//===Authentification de l'utilisateur
+
+//bouton login/logout
+const loginButton = document.getElementById("login-button");
+
+//on récupère le token de l'utilisateur
+const token = window.localStorage.getItem("token")
+//on regarde si l'utilisateur est authentifié
+if (token === null) {
+    // parcours utilisateur non authentifié
+    loginButton.addEventListener("click", loginFunction)
+    const bandeau = document.querySelector(".bandeau")
+    bandeau.style.display = "none"
+
+} else {
+    // parcours utilisateur authentifié   
+    loginButton.innerText = "logout"
+    loginButton.addEventListener("click", logoutFunction)
+
+    const bouton_outil = document.querySelector(".js-modal")
+    bouton_outil.style.display = "inline-block"
+    bouton_outil.addEventListener('click', openModal);
+
+    ListeBoutons.style.display = "none"
+}
+
+function logoutFunction() {
+    window.localStorage.removeItem("token")
+    window.location.reload()
+}
+function loginFunction() { window.location.href = "login_page.html" }
+
+
+
+
+//===ajout de la fenêtre modal
+
+
+// cette variable nous permet de savoir si la modale est présente ou non
 let modal = null;
-
-
 
 function openModal(e) {
     e.preventDefault();
@@ -207,8 +194,27 @@ const closeModal = function (e) {
 
 function stopPropagation(e) { e.stopPropagation(); }
 
+const nextButtonModal = document.querySelector(".js-modal-next")
+const returnButtonModal = document.querySelector(".js-modal-return")
 
 
+const modalGalery = document.querySelector(".js-modal-gallery")
+const modalForm = document.querySelector(".js-modal-form")
+
+modalForm.style.display = "none"
+returnButtonModal.style.opacity = 0
+
+// le bouton next qui permet ajouter une photo fait disparaitre la galerie pour faire apparaitre le formulaire
+nextButtonModal.addEventListener("click", function () {
+    modalGalery.style.display = "none"
+    modalForm.style.display = "flex"
+    returnButtonModal.style.opacity = 1
+})
+returnButtonModal.addEventListener("click", function () {
+    modalGalery.style.display = "flex"
+    modalForm.style.display = "none"
+    returnButtonModal.style.opacity = 0
+})
 
 function Afficher_Liste_modal(liste) {
     /* on récupère la div modal-content*/
@@ -245,6 +251,41 @@ function Afficher_Liste_modal(liste) {
     }
 }
 
+//=== suppression des travaux existants
+
+function delete_work(id) {
+    console.log(id);
+
+    /* D'après le swagger on rajoute le token dans le header*/
+    fetch(`http://localhost:5678/api/works/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+    }).then(function (result) {
+        if (result.ok) {
+            //suppression du travail dans le html  
+            // on filtre notre liste works en retirant celui qui a été supprimé sur le serveur
+            works = works.filter(function (work) {
+                return work.id !== id
+            })
+            // on réactualise l'affichage avec la nouvelle liste
+            Afficher_Liste(works);
+            Afficher_Liste_modal(works);
+
+        } else {
+            throw new Error(result.status)
+        }
+
+    }).catch(
+        //affichage de l'erreur
+        (error) => {
+            console.log(error)
+
+        }
+    )
+};
+
+//===envoi d'un nouveau projet au back-end
+
 //On récupère le formulaire pour l'envoi de fichier
 const form = document.getElementById("js-modal-form");
 
@@ -278,39 +319,6 @@ form.addEventListener("submit", (event) => {
 });
 
 
-function delete_work(id) {
-    console.log(id);
-
-    /* D'après le swagger on rajoute le token dans le header*/
-    fetch(`http://localhost:5678/api/works/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-    }).then(function (result) {
-        if (result.ok) {
-            //suppression du travail dans le html  
-            // on filtre notre liste works en retirant celui qui a été supprimé sur le serveur
-            works = works.filter(function (work) {
-                return work.id !== id
-            })
-            // on réactualise l'affichage avec la nouvelle liste
-            Afficher_Liste(works);
-            Afficher_Liste_modal(works);
-
-        } else {
-            throw new Error(result.status)
-        }
-
-    }).catch(
-        //affichage de l'erreur
-        (error) => {
-            console.log(error)
-
-        }
-    )
-};
-
-
-
 // Remplissage du menu déroulant des catégories pour l'ajout de projets dans la modale
 const categorieElement = form.querySelector("select");
 for (let i = 0; i < categories.length; i++) {
@@ -318,4 +326,41 @@ for (let i = 0; i < categories.length; i++) {
     optionElement.value = categories[i].id;
     optionElement.innerText = categories[i].name;
     categorieElement.appendChild(optionElement);
+}
+
+//Ici vient le code pour l'image de la prévisualisation ajout photo dans modale
+const ajout_img = document.querySelector(".ajouter-image")
+const preview_img = document.querySelector(".form-image-preview")
+const input_img = document.getElementById("input-image")
+
+let image_modale_element = document.createElement("img")
+preview_img.appendChild(image_modale_element)
+
+//lorsque l'utilisateur sélectionne une image on appelle la fonction update_image
+input_img.addEventListener("change", update_img)
+
+function update_img() {
+    // on vérifie qu'il y ait au moins un fichier sélectionné
+    if (input_img.files.length !== 0) {
+        //on récupère l'image qui est le premier élément de la liste file
+        let file = input_img.files[0]
+
+        // si la taille de l'image est inf à 4 Mo
+        if (file.size <= 4000000) {
+            //on cache le bouton ajouter et on affiche le preview
+            preview_img.style.display = "inline"
+            ajout_img.style.display = "none"
+
+            //d'après exemple MDN dans input file 
+            // on ajoute l'image dans le src de la balise HTML
+            image_modale_element.src = window.URL.createObjectURL(file)
+        }
+    }
+
+    // on regarde si le formulaire est complet avec la fonction 
+    update_form()
+}
+
+function update_form() {
+    console.log(form.reportValidity())
 }
