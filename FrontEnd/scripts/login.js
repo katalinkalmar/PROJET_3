@@ -1,7 +1,10 @@
 // Je récupère les paramètres
-
 const form = document.querySelector('form');
 const box = document.querySelector('.loginbox');
+
+// variable stockant le text pour une identification erronnée
+let error_element = null
+
 // Je soumets le formulaire
 form.addEventListener("submit", async function (event) {
 
@@ -54,16 +57,17 @@ form.addEventListener("submit", async function (event) {
         // en cas d'erreur intercepté dans le try, j'exécute le code suivant:
     } catch (error) {
         //je préviens le développeur
-        console.log("identification erronnée");
+        console.log("identification erronée");
 
-        //je préviens l'utilisateur
-        const error_element = document.createElement("h3");
-        error_element.innerText = "Identification erronnée"
-        box.appendChild(error_element)
-
+        // on regarde si le texte Identification erronée existe déjà ou pas
+        // si il n'existe pas on le ajoute
+        if (error_element === null) {
+            //je préviens l'utilisateur
+            error_element = document.createElement("h3");
+            error_element.innerText = "Identification erronée"
+            box.appendChild(error_element)
+        }
     }
-
-
 });
 
 document.getElementById("mp-button").addEventListener("click", ()=>window.location.href = "index.html")

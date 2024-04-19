@@ -607,7 +607,7 @@ footer nav ul {
 }
 
 .ajouter-image input[type="file"] {
-	display: none;
+	opacity: 0;
 }
 
 .ajouter-image p {
@@ -659,5 +659,5 @@ select {
 }
 
 .modal-footer input:disabled {
-	color: red;
+	background-color: #A7A7A7;
 }

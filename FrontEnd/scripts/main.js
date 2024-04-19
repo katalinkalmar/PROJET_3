@@ -159,14 +159,21 @@ function loginFunction() { window.location.href = "login_page.html" }
 // cette variable nous permet de savoir si la modale est présente ou non
 let modal = null;
 
+// fonction utilisée pour ouvrir la modale
 function openModal(e) {
     e.preventDefault();
+
+    // on récupère l'élément html correspondant à la modale
     modal = document.querySelector("#modal");
+
+    // on enlève le display="none" de la modale en le remplacant par null
+    // ceci pour afficher la modale
     modal.style.display = null;
 
     modal.removeAttribute('aria-hidden');
     modal.setAttribute('aria-modal', 'true');
 
+    // on relie les différents boutons de la modale à leur fonction
     modal.addEventListener('click', closeModal);
     modal.querySelector('.js-modal-close').addEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation);
@@ -174,19 +181,26 @@ function openModal(e) {
     Afficher_Liste_modal(works);
 }
 
+// fonction utilisée pour fermer la modale
 const closeModal = function (e) {
+    // test avec if pour savoir si une modale est déjà ouverte
     if (modal === null) return;
-
     e.preventDefault();
 
     modal.setAttribute('aria-hidden', 'true');
     modal.removeAttribute('aria-modal');
+
+    // on coupe les liasions des différents boutons de la modale à leur fonction
     modal.removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-close').removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
+    
+    
     const hideModal = function () {
+        // on cache la modale
         modal.style.display = "none";
         modal.removeEventListener('animationend', hideModal);
+        // on efface la variavle modal pour dire qu'il n'y a plus de modale à l'écran
         modal = null;
     };
     modal.addEventListener('animationend', hideModal);
@@ -194,25 +208,37 @@ const closeModal = function (e) {
 
 function stopPropagation(e) { e.stopPropagation(); }
 
+// bouton permettant de passer de la galerie au formulaire
 const nextButtonModal = document.querySelector(".js-modal-next")
+// bouton permettant de passer du formulaire à la galerie
 const returnButtonModal = document.querySelector(".js-modal-return")
 
 
 const modalGalery = document.querySelector(".js-modal-gallery")
 const modalForm = document.querySelector(".js-modal-form")
 
+// on cache le formulaire
 modalForm.style.display = "none"
+// on cache le bouton le retour quand on est dans la gallerie
 returnButtonModal.style.opacity = 0
 
 // le bouton next qui permet ajouter une photo fait disparaitre la galerie pour faire apparaitre le formulaire
 nextButtonModal.addEventListener("click", function () {
+    // on cache la galerie
     modalGalery.style.display = "none"
+    // on affiche le formulaire
     modalForm.style.display = "flex"
+    // on fait apparaitre le bouton pour retourner en arrière
     returnButtonModal.style.opacity = 1
 })
+
+// le bouton return qui permet de passer du formulaire à la galerie
 returnButtonModal.addEventListener("click", function () {
+    // on affiche la galerie
     modalGalery.style.display = "flex"
+    // on cache le formulaire
     modalForm.style.display = "none"
+    // on cache le bouton return
     returnButtonModal.style.opacity = 0
 })
 
@@ -225,28 +251,32 @@ function Afficher_Liste_modal(liste) {
 
     let work = null
     for (let i = 0; i < liste.length; i++) {
-        // On crée une variable  contenant les travaux
+        // On crée une variable contenant les travaux
         work = liste[i];
 
+        // on crée un bouton
         const button_element = document.createElement("button");
+        // on rajoute la class CSS
         button_element.classList.add("modal-card");
-        // on définit une fonction anonyme pour chacun des boutons
+        // on définit une fonction anonyme pour chacun des boutons qui appele la fonction pour supprimer les projets
         button_element.addEventListener("click", function () { delete_work(work.id) });
 
 
+        // on met les images des projets
         const img_element = document.createElement("img");
         img_element.classList.add("modal-card-img");
         img_element.src = work.imageUrl;
         button_element.appendChild(img_element);
 
 
+        // on met les images des poubelles
         const trash_element = document.createElement("img");
         trash_element.classList.add("modal-card-trash");
         trash_element.src = "./assets/icons/trash.svg";
         button_element.appendChild(trash_element);
 
 
-        //Dans ma gallery je rajoute un enfant qui est button_element
+        // Dans ma gallery je rajoute un enfant qui est button_element
         modal_content.appendChild(button_element);
     }
 }
@@ -362,5 +392,17 @@ function update_img() {
 }
 
 function update_form() {
-    console.log(form.reportValidity())
+    // on vérifie si le formulaire est complet
+
+    if(form.reportValidity()){
+        // si le formulaire est valide, on enlève disabled du bouton
+        document.getElementById("js-modal-valider").disabled = false
+    } else {
+        // si le formulaire n'est pas valide, on met disabled sur le bouton
+        document.getElementById("js-modal-valider").disabled = true
+    }
 }
+
+// on demande que, à chaque changement, on vérifie si le formulaire est valide avec la fonction update_form
+document.querySelector(".inputFileDiv input").addEventListener("change", update_form)
+document.querySelector(".inputFileDiv select").addEventListener("change", update_form)
