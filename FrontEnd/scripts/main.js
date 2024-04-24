@@ -339,6 +339,21 @@ form.addEventListener("submit", (event) => {
                 works.push(work);
                 Afficher_Liste(works);
                 Afficher_Liste_modal(works);
+                
+                // on appelle la fonction reset qui réinitialise le formulaire
+                form.reset();
+                // on cache la preview
+                preview_img.style.display = "none"
+                // on affiche le bouton pour ajouter
+                ajout_img.style.display = "flex"
+
+                // copier depuis le bouton return
+                // on affiche la galerie
+                modalGalery.style.display = "flex"
+                // on cache le formulaire
+                modalForm.style.display = "none"
+                // on cache le bouton return
+                returnButtonModal.style.opacity = 0
             })
         } else {
             throw new Error(reponse.status)
